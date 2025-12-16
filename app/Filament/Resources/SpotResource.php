@@ -144,7 +144,7 @@ class SpotResource extends Resource
         $query = parent::getEloquentQuery()->with(['category', 'spotStorage']);
 
         $user = auth()->user();
-        if ($user && !$user->is_admin) { 
+        if ($user && $user->role !== 'admin') { 
             $allowedSpotIds = \App\Models\SpotPermission::where('user_id', $user->id)
                                                         ->where('can_access', true)
                                                         ->pluck('spot_id');
