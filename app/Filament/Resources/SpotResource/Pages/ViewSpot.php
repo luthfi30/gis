@@ -39,7 +39,7 @@ class ViewSpot extends ViewRecord
     protected function loadGeoJsonContent()
     {
         $filePath = $this->record->geojson_file;
-        $disk = 'public';
+        $disk = 's3';
 
         // 1. Dapatkan URL File GeoJSON (BUKAN KONTENNYA)
         if ($filePath) {
