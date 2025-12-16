@@ -22,10 +22,9 @@ class Spot extends Model
    
     protected $casts = [
         // Pastikan kolom ini di-cast sebagai array atau object.
-        // Array/object lebih aman karena GeoJSON adalah JSON structure.
         'geojson_data' => 'array',
-        // Jika kolom GeoJSON Anda bernama 'location' atau yang lain, gunakan nama tersebut.
     ];
+    
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -44,7 +43,7 @@ class Spot extends Model
      */
     public function permissions(): HasMany
     {
-        return $this->hasMany(SpotPermission::class, 'spot_id');
+        return $this->hasMany(SpotPermission::class, 'spot_id'); //
     }
 
 
@@ -52,12 +51,18 @@ class Spot extends Model
     {
         parent::boot();
 
-        // Ketika sebuah record dihapus:
+        // Ketika sebuah record dihapus (event deleting):
         static::deleting(function ($model) {
-            // Pastikan kolom geojson_file ada nilainya
+            
+            // 1. HAPUS SEMUA SPOT PERMISSION YANG BERELASI
+            // Ini akan menghapus semua record di tabel 'spots_permisson' yang memiliki spot_id ini,
+            // sehingga Foreign Key Constraint terhindari.
+            $model->permissions()->delete(); //
+
+            // 2. Hapus file geojson (Logika yang sudah ada)
             if ($model->geojson_file) {
                 // Hapus file dari disk 'public'
-                Storage::disk('public')->delete($model->geojson_file);
+                Storage::disk('public')->delete($model->geojson_file); //
             }
         });
     }

@@ -225,8 +225,6 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
         return gdriveUrl;
     };
 
-    // ... (kode sebelumnya di map-core.js biarkan saja) ...
-
     // ===============================================
     //          LOGIKA MODAL FULLSCREEN (GLOBAL)
     // ===============================================
@@ -291,6 +289,13 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
             window.closeImageModal();
         }
     });
+
+    // ===============================================
+    //          FUNGSI DEBOUNCE (TAMBAHAN)
+    // ===============================================
+    /**
+     * Menunda pemanggilan fungsi hingga setelah jeda tertentu (delay).
+     */
     window.debounce = (func, delay) => {
         let timeoutId;
         return function (...args) {
