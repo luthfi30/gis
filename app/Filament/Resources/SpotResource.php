@@ -74,7 +74,7 @@ class SpotResource extends Resource
 
                     FileUpload::make('geojson_file')
                         ->label('Upload File GeoJSON')
-                        ->disk('public')
+                        ->disk('s3')
                         ->directory('geojson_files')
                         ->maxSize(204800) // 200MB
                         ->enableDownload()
