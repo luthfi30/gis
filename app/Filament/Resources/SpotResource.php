@@ -140,20 +140,25 @@ class SpotResource extends Resource
     }
     
     public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery()->with(['category', 'spotStorage']);
+{
+    $query = parent::getEloquentQuery()->with(['category', 'spotStorage']);
 
-        $user = auth()->user();
-        if ($user && $user->role !== 'admin') { 
-            $allowedSpotIds = \App\Models\SpotPermission::where('user_id', $user->id)
-                                                        ->where('can_access', true)
-                                                        ->pluck('spot_id');
-
-            $query->whereIn('id', $allowedSpotIds);
-        }
+    $user = auth()->user();
+    
+    // Perbaikan: Ganti pengecekan Admin menggunakan hasRole() dari Spatie
+    // hasRole('admin') akan mengembalikan TRUE jika user punya peran admin
+    if ($user && !$user->hasRole('admin')) { 
         
-        return $query;
+        // Logika ini HANYA berjalan jika user BUKAN admin
+        $allowedSpotIds = \App\Models\SpotPermission::where('user_id', $user->id)
+                                                    ->where('can_access', true)
+                                                    ->pluck('spot_id');
+
+        $query->whereIn('id', $allowedSpotIds);
     }
+    
+    return $query;
+}
 
     public static function getRelations(): array
     {
