@@ -163,13 +163,27 @@ if (typeof window.map === 'undefined') {
     /**
      * Memperbarui opasitas (garis dan isi) dari layer GeoJSON yang sudah ada di peta.
      */
+    /**
+     * Memperbarui opasitas (garis dan isi) dari layer GeoJSON yang sudah ada di peta.
+     */
     window.updateLayerOpacity = (slug, newOpacity) => {
         const layer = window.activeGeoJsonLayers[slug];
         if (layer) {
-            const currentColor = layer.options.style.color || '#0078FF';
+            // Ambil warna yang BENAR dari data-color checkbox
+            const checkbox = document.querySelector(
+                `.layer-check[data-layer="${slug}"]`,
+            );
+
+            // Ambil warna dari checkbox, jika tidak ada, gunakan warna default Leaflet dari layer options
+            const currentColor = checkbox
+                ? checkbox.dataset.color ||
+                  layer.options.style.color ||
+                  '#0078FF'
+                : layer.options.style.color || '#0078FF';
+
             const isUploaded = !window.activeLegends[slug];
             const newStyle = window.getGeoJsonStyle(
-                currentColor,
+                currentColor, // Menggunakan warna yang diambil dari checkbox
                 newOpacity,
                 isUploaded,
             );
@@ -182,6 +196,9 @@ if (typeof window.map === 'undefined') {
                     featureLayer.options &&
                     featureLayer.options.radius
                 ) {
+                    // ... (tetap sama)
+                    featureLayer.options.color = currentColor; // Pastikan warna titik juga diset ulang
+                    featureLayer.options.fillColor = currentColor; // Pastikan warna titik juga diset ulang
                     featureLayer.options.opacity = newOpacity;
                     featureLayer.options.fillOpacity = newPointFillOpacity;
                     featureLayer.redraw();
@@ -236,8 +253,77 @@ if (typeof window.map === 'undefined') {
         }
     };
 
+    // ===============================================
     // Event Listener untuk Checkbox Layer (Sidebar)
+    // ===============================================
+
     const layerCheckboxes = document.querySelectorAll('.layer-check');
+
+    // Fungsi untuk menambahkan layer ke peta, baik dari cache maupun dari data baru
+    const addLayerToMap = (
+        slug,
+        data,
+        currentColor,
+        currentOpacity,
+        layerName,
+    ) => {
+        // Pastikan data memiliki uniqueId (ini sudah dilakukan di fetch sebelumnya, tapi kita jaga-jaga)
+        const dataWithIds = JSON.parse(JSON.stringify(data)); // Clone data
+
+        // --- LOGIKA UTAMA: TAMBAHKAN LAYER ---
+        // Gunakan L.geoJSON biasa
+        const layer = window.addGeoJsonToMap(
+            dataWithIds,
+            currentColor,
+            false,
+            currentOpacity,
+        );
+        // JANGAN LANGSUNG .addTo(window.map) di sini
+
+        // 1. Tambahkan GeoJSON ke peta
+        layer.addTo(window.map);
+
+        // 2. Jika layer SANGAT BESAR (misal > 10.000 fitur), nonaktifkan interaksi saat bergerak
+        // *Ini adalah perbaikan kinerja (Debouncing/Throttling)*
+        const isLargeLayer = dataWithIds.features.length > 10000;
+
+        if (isLargeLayer) {
+            // Nonaktifkan sementara fitur interaktif saat peta bergerak
+
+            // Simpan handler agar bisa dihapus saat layer di-unchecked
+            const movestartHandler = function () {
+                // Hapus layer GeoJSON dari peta sementara
+                if (window.map.hasLayer(layer)) {
+                    window.map.removeLayer(layer);
+                }
+            };
+
+            // Gunakan Debounce untuk menambahkannya kembali setelah peta diam
+            const debouncedAddLayer = window.debounce(() => {
+                if (!window.map.hasLayer(layer)) {
+                    window.map.addLayer(layer);
+                }
+            }, 500); // Tunda 500ms setelah gerakan terakhir
+
+            // Simpan handler di layer object untuk referensi penghapusan
+            layer.movestartHandler = movestartHandler;
+            layer.moveendHandler = debouncedAddLayer;
+
+            window.map.on('movestart', layer.movestartHandler);
+            window.map.on('moveend', layer.moveendHandler);
+        }
+
+        // Simpan layer aktif dan data GeoJSON di cache
+        window.activeGeoJsonLayers[slug] = layer;
+        window.storedGeoJsonData[slug] = dataWithIds;
+
+        // Legenda: Tambahkan ke legenda
+        window.activeLegends[slug] = {
+            name: layerName,
+            color: currentColor,
+        };
+        window.updateLegend();
+    };
 
     layerCheckboxes.forEach((checkbox) => {
         const slug = checkbox.dataset.layer;
@@ -262,7 +348,23 @@ if (typeof window.map === 'undefined') {
                 : layerLabelText;
 
             if (this.checked) {
-                if (url) {
+                // ===================================
+                //  LOGIKA CACHING: CEK MEMORI DULU
+                // ===================================
+
+                // 1. Cek apakah data sudah ada di cache
+                if (window.storedGeoJsonData[slug]) {
+                    // Gunakan data dari cache
+                    addLayerToMap(
+                        slug,
+                        window.storedGeoJsonData[slug], // Ambil dari cache
+                        currentColor,
+                        currentOpacity,
+                        layerName,
+                    );
+                }
+                // 2. Jika belum ada di cache, lakukan fetch
+                else if (url) {
                     fetch(url)
                         .then((response) => {
                             if (!response.ok) {
@@ -271,44 +373,47 @@ if (typeof window.map === 'undefined') {
                             return response.json();
                         })
                         .then((data) => {
-                            const dataWithIds = JSON.parse(
-                                JSON.stringify(data),
+                            // Panggil addLayerToMap, yang juga akan mengisi cache
+                            addLayerToMap(
+                                slug,
+                                data, // Ambil dari fetch
+                                currentColor,
+                                currentOpacity,
+                                layerName,
                             );
-
-                            const layer = window
-                                .addGeoJsonToMap(
-                                    dataWithIds,
-                                    currentColor,
-                                    false,
-                                    currentOpacity,
-                                )
-                                .addTo(window.map);
-
-                            window.activeGeoJsonLayers[slug] = layer;
-
-                            // Simpan data GeoJSON yang sudah dimodifikasi
-                            window.storedGeoJsonData[slug] = dataWithIds;
-
-                            // Legenda: Tambahkan ke legenda
-                            window.activeLegends[slug] = {
-                                name: layerName,
-                                color: currentColor,
-                            };
-                            window.updateLegend();
                         })
                         .catch((error) =>
                             console.error('Error loading GeoJSON:', error),
                         );
                 }
             } else {
+                // Logika UNCHECKED
                 if (window.activeGeoJsonLayers[slug]) {
-                    window.map.removeLayer(window.activeGeoJsonLayers[slug]);
+                    const layerToRemove = window.activeGeoJsonLayers[slug];
+                    window.map.removeLayer(layerToRemove);
+
+                    // ===================================
+                    // HAPUS LISTENER DEBOUNCE (PENTING)
+                    // ===================================
+                    if (
+                        layerToRemove.movestartHandler &&
+                        layerToRemove.moveendHandler
+                    ) {
+                        window.map.off(
+                            'movestart',
+                            layerToRemove.movestartHandler,
+                        );
+                        window.map.off('moveend', layerToRemove.moveendHandler);
+                        delete layerToRemove.movestartHandler;
+                        delete layerToRemove.moveendHandler;
+                    }
+                    // ===================================
+
                     delete window.activeGeoJsonLayers[slug];
 
-                    // Hapus data dari memori saat layer dimatikan
-                    delete window.storedGeoJsonData[slug];
+                    // Data TIDAK dihapus dari window.storedGeoJsonData (TETAP DI CACHE)
 
-                    // Legenda: Hapus dari legenda
+                    // Legenda: Hapus dari legenda aktif (map-legend)
                     delete window.activeLegends[slug];
                     window.updateLegend();
                 }
@@ -350,6 +455,12 @@ if (typeof window.map === 'undefined') {
 
         if (layer) {
             try {
+                // Untuk GeoJSON besar dengan Debounce, layer mungkin sudah dihapus.
+                // Tambahkan lagi sementara untuk mendapatkan bounds.
+                if (!window.map.hasLayer(layer)) {
+                    layer.addTo(window.map);
+                }
+
                 const bounds = layer.getBounds();
                 if (bounds.isValid()) {
                     window.map.fitBounds(bounds, { padding: [50, 50] });

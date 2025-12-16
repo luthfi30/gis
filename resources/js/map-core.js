@@ -291,4 +291,15 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
             window.closeImageModal();
         }
     });
-} // <--- Pastikan ini adalah kurung kurawal penutup dari blok 'else' paling luar di map-core.js
+    window.debounce = (func, delay) => {
+        let timeoutId;
+        return function (...args) {
+            // Hapus timeout sebelumnya (jika ada)
+            clearTimeout(timeoutId);
+            // Atur timeout baru
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    };
+}
