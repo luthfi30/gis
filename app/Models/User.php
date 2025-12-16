@@ -8,11 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-// PASTIKAN ANDA MEMILIKI DUA BARIS IMPORT INI:
+// --- TAMBAHAN WAJIB UNTUK FILAMENT ---
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+// -------------------------------------
+
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable
+// Tambahkan "implements FilamentUser" di sini
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -51,19 +56,27 @@ class User extends Authenticatable
         ];
     }
 
+    // --- FUNGSI PINTU MASUK FILAMENT (WAJIB ADA) ---
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Izinkan User yang punya role 'admin' ATAU 'user'
+        // Jika belum punya role sama sekali, return false (403)
+        return $this->hasRole(['admin', 'user']);
+        
+        // CATAAN: Jika Anda ingin SEMUA user yang login bisa masuk (tanpa cek role dulu),
+        // Ganti baris return di atas menjadi:
+        // return true;
+    }
+    // ----------------------------------------------
+
    public function allowedSpots(): BelongsToMany
     {
         return $this->belongsToMany(Spot::class, 'spots_permisson', 'user_id', 'spot_id')
-                    ->using(SpotPermission::class); // Menggunakan model pivot SpotPermission
+                    ->using(SpotPermission::class); 
     }
 
-    /**
-     * Relasi BARU: User has many SpotPermissions.
-     * Relasi ini digunakan oleh Relation Manager untuk mengelola baris izin.
-     */
     public function permissions(): HasMany
     {
-        // Hubungkan ke model SpotPermission menggunakan kolom foreign key 'user_id'
         return $this->hasMany(SpotPermission::class, 'user_id'); 
     }
 }
