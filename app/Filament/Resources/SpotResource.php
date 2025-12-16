@@ -105,11 +105,17 @@ class SpotResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('geojson_file')
-                    ->label('File GeoJSON')
-                    ->sortable()
-                    ->searchable()
-                    ->url(fn ($record) => Storage::disk('public')->url($record->geojson_file), true),
+                TextColumn::make('geojson_file') // Pastikan nama kolom database Anda benar
+                ->label('File GeoJSON')
+                ->sortable()
+                ->searchable()
+                // UBAH DI SINI: Ganti 'public' jadi 's3'
+                ->url(fn ($record) => Storage::disk('s3')->url($record->geojson_file), true)
+                
+                // TAMBAHAN: Biar warnanya biru dan ada icon (Opsional, biar cantik)
+                ->color('primary') 
+                ->icon('heroicon-o-arrow-down-tray')
+                ->formatStateUsing(fn ($state) => 'Download GeoJSON'), // Mengganti teks filename panjang jadi teks pendek
                     
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
