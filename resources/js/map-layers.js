@@ -54,11 +54,11 @@ if (typeof window.map === 'undefined') {
                     const title =
                         feature.properties.name ||
                         feature.properties.Nama ||
-                        'Detail Fitur GeoJSON';
+                        'Detail Fitur ';
 
                     let popupContent = `
                         <div style="font-family: Arial, sans-serif; max-width: 300px; padding: 5px;">
-                            <h4 style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid ${layerColor}; color: ${layerColor}; font-size: 1.1em;">
+                            <h4 style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid red; font-size: 1.1em;">
                                 ${title}
                             </h4>
                             <div style="max-height: 200px; overflow-y: auto;">

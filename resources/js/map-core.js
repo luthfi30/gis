@@ -51,14 +51,57 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
     //   2. DEFINISI BASE LAYERS & KONTROL
     // ===============================================
 
-    // --- A. ZOOM CONTROL (Manual di Kanan Atas) ---
+    // --- ZOOM CONTROL (Manual di Kanan Atas) ---
     L.control
         .zoom({
             position: 'topright',
         })
         .addTo(window.map);
 
-    // --- B. BASE LAYERS ---
+    // --- TOMBOL HOME (EasyButton) - KANAN ATAS ---
+    const homeSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 26px; height: 26px; display: block; margin: 3px auto;">
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+        </svg>
+    `;
+    // Tombol Home
+    L.easyButton({
+        position: 'topright', // Ubah ke Kanan
+        states: [
+            {
+                stateName: 'zoom-to-home',
+                icon: homeSvg,
+                title: 'Kembali ke Posisi Awal',
+                onClick: function (btn, map) {
+                    map.fitBounds(INDONESIA_BOUNDS);
+                },
+            },
+        ],
+    }).addTo(window.map);
+
+    // --- MEASUREMENT TOOL - KANAN ATAS ---
+    L.control
+        .polylineMeasure({
+            position: 'topright', // Ubah ke Kanan
+            unit: 'kilometres',
+            showBearings: false,
+            clearMeasurementsOnStop: false,
+            showClearControl: true,
+            showUnitControl: true,
+            tooltipTextFinish: 'Klik untuk <b>menyelesaikan</b> garis',
+            tooltipTextDelete:
+                'Tekan SHIFT + Klik untuk <b>menghapus</b> titik',
+            tooltipTextMove: 'Klik dan seret untuk <b>memindah</b> titik',
+            tooltipTextResume:
+                '<br>Tekan CTRL + Klik untuk <b>lanjut</b> mengukur',
+            tempLine: { color: '#00ffff', weight: 2 },
+            fixedLine: { color: '#0066ff', weight: 3 },
+            startCircle: { color: '#000', weight: 1, fillColor: '#0f0', r: 6 },
+            endCircle: { color: '#000', weight: 1, fillColor: '#f00', r: 6 },
+        })
+        .addTo(window.map);
+
+    // --- A. BASE LAYERS ---
     const osmLayer = L.tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         { maxZoom: 19, attribution: '© OpenStreetMap contributors' },
@@ -114,54 +157,11 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
         EsriTerrain: esriTerrain,
     };
 
-    // --- C. TOMBOL HOME (EasyButton) - KANAN ATAS ---
-    const homeSvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 26px; height: 26px; display: block; margin: 3px auto;">
-            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-        </svg>
-    `;
-
-    L.easyButton({
-        position: 'topright', // Ubah ke Kanan
-        states: [
-            {
-                stateName: 'zoom-to-home',
-                icon: homeSvg,
-                title: 'Kembali ke Posisi Awal',
-                onClick: function (btn, map) {
-                    map.fitBounds(INDONESIA_BOUNDS);
-                },
-            },
-        ],
-    }).addTo(window.map);
-
-    // --- D. LAYER CONTROL - KANAN ATAS ---
+    // --- A. LAYER CONTROL - KANAN ATAS ---
     const overlayLayers = {};
     L.control
         .layers(baseLayers, overlayLayers, {
             position: 'topright', // Ubah ke Kanan
-        })
-        .addTo(window.map);
-
-    // --- E. MEASUREMENT TOOL - KANAN ATAS ---
-    L.control
-        .polylineMeasure({
-            position: 'topright', // Ubah ke Kanan
-            unit: 'kilometres',
-            showBearings: false,
-            clearMeasurementsOnStop: false,
-            showClearControl: true,
-            showUnitControl: true,
-            tooltipTextFinish: 'Klik untuk <b>menyelesaikan</b> garis',
-            tooltipTextDelete:
-                'Tekan SHIFT + Klik untuk <b>menghapus</b> titik',
-            tooltipTextMove: 'Klik dan seret untuk <b>memindah</b> titik',
-            tooltipTextResume:
-                '<br>Tekan CTRL + Klik untuk <b>lanjut</b> mengukur',
-            tempLine: { color: '#00ffff', weight: 2 },
-            fixedLine: { color: '#0066ff', weight: 3 },
-            startCircle: { color: '#000', weight: 1, fillColor: '#0f0', r: 6 },
-            endCircle: { color: '#000', weight: 1, fillColor: '#f00', r: 6 },
         })
         .addTo(window.map);
 

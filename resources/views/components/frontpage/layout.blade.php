@@ -17,7 +17,7 @@
 <body class="flex h-screen flex-col bg-gray-100">
 
     {{-- NAVBAR --}}
-    <nav class="flex items-center justify-between bg-slate-900 px-6 py-3 text-white shadow">
+    <nav class="flex items-center justify-between bg-slate-900 px-6 py-6 text-white shadow">
 
         {{-- Toggle Sidebar Button --}}
         <button class="bg-white-900 hover:bg-white-700 mr-4 rounded px-3 py-2">
@@ -208,34 +208,15 @@
                     </div>
                 </div>
                 {{-- modal gambar --}}
-                <div id="imageModal"
-                    class="fixed inset-0 z-[9999] flex hidden items-center justify-center bg-black bg-opacity-90 transition-opacity duration-300">
-                    {{-- Tombol Close --}}
-                    <button id="closeModalBtn"
-                        class="absolute right-4 top-4 z-50 text-white hover:text-gray-300 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-
-                    {{-- Wadah Gambar --}}
-                    <div class="relative flex h-full w-full items-center justify-center p-4">
-                        <img id="modalImage" src="" alt="Fullscreen View"
-                            class="max-h-full max-w-full rounded object-contain shadow-2xl">
-                    </div>
-                </div>
 
             </div>
         </aside>
+        {{-- ... (kode navbar dan main content) ... --}}
 
+        {{-- 1. UBAH Z-INDEX TOMBOL TOGGLE (Main Content) --}}
         <main class="relative flex-1">
-
-            {{-- TOMBOL TOGGLE: PINDAH KE KIRI (left-4) --}}
-            <button id="toggleSidebar" style="position: absolute; top: 15px; left: 15px; z-index: 9999;"
+            <button id="toggleSidebar" style="position: absolute; top: 15px; left: 15px; z-index: 1001;"
                 class="rounded-md border border-gray-300 bg-white p-2 text-gray-700 shadow-lg hover:bg-gray-100 focus:outline-none">
-
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -247,13 +228,36 @@
             <x-frontpage.attribute-panel />
         </main>
 
-    </div>
+        {{-- 2. PINDAHKAN MODAL KE SINI (Tepat sebelum tutup body) --}}
+        <div id="imageModal"
+            class="fixed inset-0 z-[10000] flex hidden items-center justify-center bg-black/40 backdrop-blur-md transition-all duration-300">
 
-    {{-- Leaflet --}}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/shpjs@latest/dist/shpjs.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-    <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+            <button id="closeModalBtn"
+                class="absolute right-6 top-6 z-[10001] text-white drop-shadow-lg transition-transform hover:scale-110 hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="relative flex h-full w-full items-center justify-center p-8">
+                <img id="modalImage" src="" alt="Fullscreen View"
+                    class="max-h-full max-w-full rounded-lg object-contain shadow-2xl ring-1 ring-white/20">
+            </div>
+        </div>
+
+        {{-- Leaflet Scripts --}}
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        {{-- ... script lainnya ... --}}
+</body>
+
+</div>
+
+{{-- Leaflet --}}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/shpjs@latest/dist/shpjs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+<script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
 </body>
 
 </html>
