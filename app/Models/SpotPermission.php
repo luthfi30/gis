@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot; // Pastikan ini di-use
 
-class SpotPermission extends Model
+// UBAH: extends Pivot (Bukan extends Model)
+class SpotPermission extends Pivot
 {
-    protected $table = 'spots_permisson'; // Penting karena nama tabel Anda non-konvensional
+    protected $table = 'spots_permisson';
 
-  protected $fillable = [
+    protected $fillable = [
         'user_id',
         'spot_id',
         'can_access',
@@ -21,7 +21,7 @@ class SpotPermission extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class); // Asumsi Model User ada
+        return $this->belongsTo(User::class);
     }
 
     /**

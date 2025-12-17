@@ -22,7 +22,7 @@ class Spot extends Model
    
     protected $casts = [
         // Pastikan kolom ini di-cast sebagai array atau object.
-        'geojson_data' => 'array',
+        'is_active' => 'boolean',
     ];
     
     public function category(): BelongsTo
