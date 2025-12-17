@@ -20,11 +20,8 @@
     <nav class="flex items-center justify-between bg-slate-900 px-6 py-3 text-white shadow">
 
         {{-- Toggle Sidebar Button --}}
-        <button id="toggleSidebar" class="bg-white-900 hover:bg-white-700 mr-4 rounded px-3 py-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-8 w-8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
+        <button class="bg-white-900 hover:bg-white-700 mr-4 rounded px-3 py-2">
+
         </button>
 
         <div class="flex hidden items-center gap-3 sm:block">
@@ -233,19 +230,28 @@
             </div>
         </aside>
 
-        {{-- MAP CONTENT --}}
         <main class="relative flex-1">
+
+            {{-- TOMBOL TOGGLE: PINDAH KE KIRI (left-4) --}}
+            <button id="toggleSidebar" style="position: absolute; top: 15px; left: 15px; z-index: 9999;"
+                class="rounded-md border border-gray-300 bg-white p-2 text-gray-700 shadow-lg hover:bg-gray-100 focus:outline-none">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-6 w-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+
             {{ $slot }}
-
-            {{-- PANGGIL KOMPONEN ATTRIBUTE PANEL DARI BAWAH --}}
             <x-frontpage.attribute-panel />
-
         </main>
 
     </div>
 
     {{-- Leaflet --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shpjs.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
 </body>

@@ -4,7 +4,7 @@
 //          LOGIKA LEGENDA DINAMIS
 // ===============================================
 
-const legendContainer = document.getElementById("legendContainer");
+const legendContainer = document.getElementById('legendContainer');
 
 /**
  * Fungsi untuk me-render ulang seluruh legenda.
@@ -13,7 +13,7 @@ const legendContainer = document.getElementById("legendContainer");
 window.updateLegend = () => {
     if (!legendContainer) return;
 
-    let legendHTML = "";
+    let legendHTML = '';
     let count = 0;
 
     // 1. Tambahkan Legenda Layer Bawaan (Spots)
