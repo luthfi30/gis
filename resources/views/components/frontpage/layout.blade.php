@@ -158,7 +158,7 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-sm text-gray-500">Tidak ada data spot ditemukan.</p>
+                        <p class="text-sm text-red-500">Silahkan Login untuk melihat layer.</p>
                     @endforelse
 
                 </div>
