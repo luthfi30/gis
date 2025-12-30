@@ -7,42 +7,64 @@
 
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
-}
-.sidebar-tab.active {
-    background: #f3f3f3;
-    font-weight: 600;
+        'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* resources/css/app.css: Tambahkan kode ini di bagian akhir file */
+/* Scrollbar Modern */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
 
-/* ========================================= */
-/* STYLE UNTUK ATTRIBUTE PANEL         */
-/* ========================================= */
+/* Style Attribute Panel (Wajib sesuai ID di JS) */
 #attributePanel {
-    /* Pastikan panel berada di atas peta tapi di bawah navbar/sidebar */
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    height: 0; /* Tinggi awal tersembunyi */
-    transition: height 0.3s ease-in-out; /* Animasi buka/tutup */
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 800; /* Di atas peta (z-0) tapi di bawah modal (z-10000) */
+    height: 0;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Sembunyikan konten saat tertutup */
 }
+
 #attributePanel.active {
-    height: 40vh; /* Tinggi saat aktif/terbuka */
-    min-height: 100px; /* Tinggi minimum */
+    height: 45vh; /* Tinggi saat dibuka */
+    border-top: 1px solid #e2e8f0;
 }
-#attributePanelHeader {
+
+/* Override Slider Bawaan Browser agar sesuai tema */
+input[type='range'] {
+    -webkit-appearance: none;
+    background: transparent;
+}
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #4f46e5; /* Indigo-600 */
     cursor: pointer;
-    user-select: none;
+    margin-top: -5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
-#modalAttributeTableContainer {
-    overflow: auto; /* Memungkinkan konten tabel digulir */
+input[type='range']::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #e2e8f0;
+    border-radius: 2px;
 }

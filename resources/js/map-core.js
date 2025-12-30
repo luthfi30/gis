@@ -47,6 +47,16 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
 
     window.map.fitBounds(INDONESIA_BOUNDS);
 
+    L.control
+        .mousePosition({
+            position: 'bottomleft',
+            separator: ' , ',
+            prefix: 'Koordinat:',
+            lngFirst: false,
+            numDigits: 6,
+        })
+        .addTo(window.map);
+
     // ===============================================
     //   2. DEFINISI BASE LAYERS & KONTROL
     // ===============================================
@@ -78,28 +88,6 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
             },
         ],
     }).addTo(window.map);
-
-    // --- MEASUREMENT TOOL - KANAN ATAS ---
-    L.control
-        .polylineMeasure({
-            position: 'topright', // Ubah ke Kanan
-            unit: 'kilometres',
-            showBearings: false,
-            clearMeasurementsOnStop: false,
-            showClearControl: true,
-            showUnitControl: true,
-            tooltipTextFinish: 'Klik untuk <b>menyelesaikan</b> garis',
-            tooltipTextDelete:
-                'Tekan SHIFT + Klik untuk <b>menghapus</b> titik',
-            tooltipTextMove: 'Klik dan seret untuk <b>memindah</b> titik',
-            tooltipTextResume:
-                '<br>Tekan CTRL + Klik untuk <b>lanjut</b> mengukur',
-            tempLine: { color: '#00ffff', weight: 2 },
-            fixedLine: { color: '#0066ff', weight: 3 },
-            startCircle: { color: '#000', weight: 1, fillColor: '#0f0', r: 6 },
-            endCircle: { color: '#000', weight: 1, fillColor: '#f00', r: 6 },
-        })
-        .addTo(window.map);
 
     // --- A. BASE LAYERS ---
     const osmLayer = L.tileLayer(
@@ -156,15 +144,50 @@ if (typeof L === 'undefined' || !document.getElementById('map')) {
         Ocean: esriOcean,
         EsriTerrain: esriTerrain,
     };
-
-    // --- A. LAYER CONTROL - KANAN ATAS ---
     const overlayLayers = {};
+    // --- A. LAYER CONTROL - KANAN ATAS ---
     L.control
         .layers(baseLayers, overlayLayers, {
             position: 'topright', // Ubah ke Kanan
         })
         .addTo(window.map);
+    // --- MEASUREMENT TOOL - KANAN ATAS ---
+    L.control
+        .polylineMeasure({
+            position: 'topright', // Ubah ke Kanan
+            unit: 'kilometres',
+            showBearings: false,
+            clearMeasurementsOnStop: false,
+            showClearControl: true,
+            showUnitControl: true,
+            tooltipTextFinish: 'Klik untuk <b>menyelesaikan</b> garis',
+            tooltipTextDelete:
+                'Tekan SHIFT + Klik untuk <b>menghapus</b> titik',
+            tooltipTextMove: 'Klik dan seret untuk <b>memindah</b> titik',
+            tooltipTextResume:
+                '<br>Tekan CTRL + Klik untuk <b>lanjut</b> mengukur',
+            tempLine: { color: '#00ffff', weight: 2 },
+            fixedLine: { color: '#0066ff', weight: 3 },
+            startCircle: { color: '#000', weight: 1, fillColor: '#0f0', r: 6 },
+            endCircle: { color: '#000', weight: 1, fillColor: '#f00', r: 6 },
+        })
+        .addTo(window.map);
 
+    // ---  geoman - KANAN ATAS ---
+    window.map.pm.addControls({
+        position: 'topright', // cocok dengan control kamu
+        drawMarker: true,
+        drawPolyline: true,
+        drawRectangle: true,
+        drawPolygon: true,
+        drawCircle: false,
+        drawCircleMarker: false,
+
+        editMode: true,
+        dragMode: true,
+        cutPolygon: true,
+        removalMode: true,
+    });
     // ===============================================
     //   3. FUNGSI HELPER & LAINNYA (TIDAK BERUBAH)
     // ===============================================
