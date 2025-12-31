@@ -12,10 +12,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    {{-- ============================================================== --}}
-    {{--  PRIORITAS 1: LOAD LEAFLET & LIBRARY PETA TERLEBIH DAHULU     --}}
-    {{-- ============================================================== --}}
-
     {{-- Leaflet CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
@@ -23,17 +19,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-mouse-position@1.2.0/src/L.Control.MousePosition.css" />
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.14.2/dist/leaflet-geoman.css" />
 
-    {{-- Leaflet JS (Wajib di Head agar terbaca oleh app.js) --}}
+    {{-- Leaflet JS --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/shpjs@3.6.3/dist/shp.min.js"></script>
     <script src="https://unpkg.com/shpjs@latest/dist/shpjs.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
     <script src="https://unpkg.com/leaflet-mouse-position@1.2.0/src/L.Control.MousePosition.js"></script>
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.14.2/dist/leaflet-geoman.min.js"></script>
 
-    {{-- ============================================================== --}}
-    {{--  PRIORITAS 2: LOAD VITE / APP.JS SETELAH LEAFLET              --}}
-    {{-- ============================================================== --}}
+    {{-- Vite / Tailwind CSS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -300,7 +295,6 @@
                 </svg>
             </button>
 
-            {{-- INI PENTING: Slot harus merender view yang memiliki <div id="map"> --}}
             <div class="relative z-0 h-full w-full flex-1">
                 {{ $slot }}
             </div>
