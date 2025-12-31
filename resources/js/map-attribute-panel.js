@@ -164,14 +164,14 @@ if (typeof window.map === 'undefined') {
 
         let tableHTML = `
             <div style="overflow-x: auto;" class="max-h-full overflow-y-auto h-full pb-10"> 
-            <table class="min-w-full divide-y divide-gray-300 border border-gray-300 relative">
-                <thead class="bg-gray-200 sticky top-0 z-10 shadow-sm"> 
+            <table class="min-w-full divide-y divide-gray-300 border border-gray-100 relative">
+                <thead class="bg-slate-700 sticky top-0 z-10 shadow-sm"> 
                     <tr>
-                        <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-r w-1">No.</th>
+                        <th class="px-3 py-2 text-left text-xs font-semibold text-white uppercase border-r w-1">No.</th>
                         ${visibleKeys
                             .map(
                                 (key) =>
-                                    `<th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-r whitespace-nowrap">${key.replace(
+                                    `<th class="px-3 py-2 text-left text-xs font-semibold text-gray-50 uppercase border-r whitespace-nowrap">${key.replace(
                                         /_/g,
                                         ' ',
                                     )}</th>`,
@@ -187,7 +187,7 @@ if (typeof window.map === 'undefined') {
             const rowNumber = startIndex + index + 1;
             let rowStyle = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
 
-            tableHTML += `<tr class="${rowStyle} attribute-row cursor-pointer hover:bg-blue-100 transition-colors duration-150" data-feature-id="${uniqueId}">`;
+            tableHTML += `<tr class="${rowStyle} attribute-row cursor-pointer hover:bg-indigo-100 transition-colors duration-150" data-feature-id="${uniqueId}">`;
             tableHTML += `<td class="px-3 py-2 text-sm text-gray-900 border-r border-gray-200 font-semibold">${rowNumber}.</td>`;
 
             visibleKeys.forEach((key) => {
@@ -366,10 +366,10 @@ if (typeof window.map === 'undefined') {
                     <div class="flex space-x-2">
                          <button data-page="${currentPage - 1}" ${
                              currentPage === 1 ? 'disabled' : ''
-                         } class="prev-page-btn px-2 py-1 border text-xs rounded hover:bg-gray-50 disabled:opacity-50">Prev</button>
+                         } class="prev-page-btn items-center rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 shadow-sm hover:border-indigo-300">Prev</button>
                          <button data-page="${currentPage + 1}" ${
                              currentPage === totalPages ? 'disabled' : ''
-                         } class="next-page-btn px-2 py-1 border text-xs rounded hover:bg-gray-50 disabled:opacity-50">Next</button>
+                         } class="next-page-btn items-center rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 shadow-sm hover:border-indigo-300">Next</button>
                     </div>
                 </div>
             `;
