@@ -3,6 +3,7 @@
 .env
 .env.backup
 .env.production
+.env.example
 .phpactor.json
 .env production
 .phpunit.result.cache
@@ -17,6 +18,7 @@
 #/public/build
 /public/hot
 /public/storage
+!/public/storage/geojson_files/
 /storage/*.key
 /storage/pail
 /vendor
