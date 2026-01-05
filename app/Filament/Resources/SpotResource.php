@@ -74,7 +74,7 @@ class SpotResource extends Resource
 
                     FileUpload::make('geojson_file')
                         ->label('Upload File GeoJSON')
-                        ->disk('s3')
+                        ->disk('public')
                         ->directory('geojson_files')
                         ->maxSize(204800) // 200MB
                         ->enableDownload()
@@ -111,7 +111,7 @@ class SpotResource extends Resource
                 ->searchable()
                 // --- PERBAIKAN DI SINI ---
                 // Hapus ", true" dan gunakan method chaining ->openUrlInNewTab()
-                ->url(fn ($record) => Storage::disk('s3')->url($record->geojson_file))
+                ->url(fn ($record) => Storage::disk('public')->url($record->geojson_file))
                 ->openUrlInNewTab() 
                 // -------------------------
                 
